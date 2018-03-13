@@ -70,6 +70,7 @@ class Estimator():
             start_time = timer()
             sum_loss = 0
 
+            self.model.train()
             for j in batch_idxs:
                 # TODO: add support for more customized batching
                 if type(train_input) is list:
@@ -87,6 +88,7 @@ class Estimator():
                    (avg_loss, (end_time - start_time)))
             
             # Evaluate the model on the validation set
+            self.model.eval()
             if (valid_input is not None) and (valid_target is not None):
                 valid_loss = (self.loss_func(self.model(valid_input), valid_target)
                               .cpu().data[0])
