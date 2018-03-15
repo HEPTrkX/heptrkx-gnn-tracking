@@ -82,6 +82,14 @@ class Estimator():
                 self.valid_losses.append(valid_loss)
                 logger('  validate loss %.3g' % valid_loss)
 
+    def predict(self, generator, n_batches):
+        self.model.eval()
+        outputs = []
+        for j in range(n_batches):
+            test_input, test_target = next(generator)
+            outputs.append(self.model(test_input))
+        return torch.cat(outputs)
+
     # DEPRECATED; MOVE TO BATCH GENERATOR VERSION
     def fit(self, train_input, train_target, batch_size=32, n_epochs=1,
             valid_input=None, valid_target=None):
