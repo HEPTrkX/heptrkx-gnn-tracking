@@ -47,7 +47,7 @@ class Estimator():
         return loss
 
     def fit_gen(self, train_generator, n_batches=1, n_epochs=1,
-                valid_generator=None, n_valid_batches=1):
+                valid_generator=None, n_valid_batches=1, verbose=0):
         """Runs batch training for a number of specified epochs."""
         epoch_start = len(self.train_losses)
         epoch_end = epoch_start + n_epochs
@@ -59,11 +59,12 @@ class Estimator():
             # Train the model
             self.model.train()
             for j in range(n_batches):
-                #logger('  Batch %i' % j)
                 batch_input, batch_target = next(train_generator)
-                # Just testing right now
-                #logger('  target size %s' % (batch_target.size(),))
-                sum_loss += self.training_step(batch_input, batch_target).cpu().data[0]
+                batch_loss = (self.training_step(batch_input, batch_target)
+                              .cpu().data[0])
+                sum_loss += batch_loss
+                if verbose > 0:
+                    logger('  Batch %i loss %f' % (j, batch_loss))
             end_time = timer()
             avg_loss = sum_loss / n_batches
             self.train_losses.append(avg_loss)
