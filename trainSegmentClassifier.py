@@ -49,6 +49,7 @@ def parse_args():
     add_arg('--input-dir',
             default='/global/cscratch1/sd/sfarrell/heptrkx/hit_graphs_mu10_003/data')
             #default='/global/cscratch1/sd/sfarrell/heptrkx/hit_graphs_mu200_000/data')
+    add_arg('--output-dir')
     add_arg('--n-samples', type=int, default=1024)
     add_arg('--valid-frac', type=float, default=0.2)
     add_arg('--test-frac', type=float, default=0.2)
@@ -166,6 +167,17 @@ def main():
     estim.fit_gen(train_batcher, n_batches=n_train_batches,
                   valid_generator=valid_batcher, n_valid_batches=n_valid_batches,
                   n_epochs=args.n_epochs, verbose=0)
+
+    # Save outputs
+    if args.output_dir is not None:
+        logging.info('Writing outputs to %s' % args.output_dir)
+        make_path = lambda s: os.path.join(args.output_dir, s)
+        # Serialize the model
+        torch.save(estim.model.state_dict(), make_path('model'))
+        # Save the losses for plotting
+        np.savez(os.path.join(args.output_dir, 'losses'),
+                 train_losses=estim.train_losses,
+                 valid_losses=estim.valid_losses)
 
     # Optional interactive session
     if args.interactive:
