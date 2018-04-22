@@ -59,6 +59,7 @@ def parse_args():
     add_arg('--n-iters', type=int, default=1)
     add_arg('--cuda', action='store_true')
     add_arg('--show-config', action='store_true')
+    add_arg('--train-verbosity', type=int, default=0)
     add_arg('--interactive', action='store_true')
     return parser.parse_args()
 
@@ -166,7 +167,7 @@ def main():
     # Train the model
     estim.fit_gen(train_batcher, n_batches=n_train_batches,
                   valid_generator=valid_batcher, n_valid_batches=n_valid_batches,
-                  n_epochs=args.n_epochs, verbose=0)
+                  n_epochs=args.n_epochs, verbose=args.train_verbosity)
 
     # Save outputs
     if args.output_dir is not None:
