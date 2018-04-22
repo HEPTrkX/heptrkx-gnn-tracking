@@ -34,20 +34,27 @@ def parse_args():
     add_arg('--phi-slope-max', type=float, default=0.001, help='phi slope cut')
     add_arg('--z0-max-inner', type=float, default=200, help='z0 cut, inner layers')
     add_arg('--z0-max-outer', type=float, default=500, help='z0 cut, outer layers')
+    add_arg('--quarter-detector', action='store_true',
+            help='Build graph just within (z>0 and phi>0)')
     add_arg('--show-config', action='store_true',
             help='Dump the command line config')
     add_arg('--interactive', action='store_true',
             help='Drop into IPython shell at end of script')
     return parser.parse_args()
 
-def select_hits(hits):
+def select_hits(hits, quarter_det=False):
     """
     Selects barrel hits, removes duplicate hits, and re-enumerates
-    the volume and layer numbers for convenience
+    the volume and layer numbers for convenience.
+    If quarter_det parameter is true, then it will only take hits from
+    z > 0 and phi > 0, corresponding to one quarter of the detector.
     """
     # Select all barrel hits
     vids = [8, 13, 17]
     hits = hits[np.logical_or.reduce([hits.volid == v for v in vids])]
+    # Select a subset of the detector
+    if quarter_det:
+        hits = hits[(hits.z > 0) & (hits.phi > 0)]
     # Re-enumerate the volume and layer numbers for convenience
     volume = pd.Series(-1, index=hits.index, dtype=np.int8)
     vid_groups = hits.groupby('volid')
@@ -106,7 +113,8 @@ def main():
 
         # Apply hit selection
         logging.info('Applying hits selections')
-        hits = pool.map(select_hits, hits)
+        sel_func = partial(select_hits, quarter_det=args.quarter_detector)
+        hits = pool.map(sel_func, hits)
 
         # Print some summary info
         pool.map(print_hits_summary, hits)
