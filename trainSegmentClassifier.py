@@ -167,5 +167,12 @@ def main():
                   valid_generator=valid_batcher, n_valid_batches=n_valid_batches,
                   n_epochs=args.n_epochs, verbose=0)
 
+    # Optional interactive session
+    if args.interactive:
+        import IPython
+        IPython.embed()
+
+    logging.info('All done!')
+
 if __name__ == '__main__':
     main()
