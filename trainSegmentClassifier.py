@@ -169,6 +169,26 @@ def main():
                   valid_generator=valid_batcher, n_valid_batches=n_valid_batches,
                   n_epochs=args.n_epochs, verbose=args.train_verbosity)
 
+    # Evaluate on the test set
+    logging.info('Evaluating the test set')
+    test_outputs = estim.predict(test_batcher, n_test_batches, concat=False)
+    test_preds = [torch_to_np(o) for o in test_outputs]
+
+    # Flatten the predictions and labels
+    flat_y = np.concatenate([g.y.flatten() for g in test_graphs])
+    flat_pred = np.concatenate([p.flatten() for p in test_preds])
+
+    # Print some general statistics for sanity checks
+    logging.info('Mean output: %.4f, stddev %.4f' % (flat_pred.mean(), flat_pred.std()))
+    logging.info('Mean label: %.4f, stddev %.4f' % (flat_y.mean(), flat_y.std()))
+
+    # Print out some metrics from scikit-learn
+    thresh = 0.5
+    logging.info('Test set results with threshold of %g' % thresh)
+    logging.info('Accuracy:  %.4f' % sklearn.metrics.accuracy_score(flat_y, flat_pred>thresh))
+    logging.info('Precision: %.4f' % sklearn.metrics.precision_score(flat_y, flat_pred>thresh))
+    logging.info('Recall:    %.4f' % sklearn.metrics.recall_score(flat_y, flat_pred>thresh))
+
     # Save outputs
     if args.output_dir is not None:
         logging.info('Writing outputs to %s' % args.output_dir)
