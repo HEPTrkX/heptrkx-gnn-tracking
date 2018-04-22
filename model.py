@@ -25,8 +25,8 @@ class EdgeNetwork(nn.Module):
             nn.Sigmoid())
     def forward(self, X, Ri, Ro):
         # Select the features of the associated nodes
-        bo = torch.matmul(Ro.transpose(1, 2), X)
-        bi = torch.matmul(Ri.transpose(1, 2), X)
+        bo = torch.bmm(Ro.transpose(1, 2), X)
+        bi = torch.bmm(Ri.transpose(1, 2), X)
         B = torch.cat([bo, bi], dim=2)
         # Apply the network to each edge
         return self.network(B).squeeze(-1)
@@ -47,12 +47,12 @@ class NodeNetwork(nn.Module):
             nn.Linear(output_dim, output_dim),
             hidden_activation())
     def forward(self, X, e, Ri, Ro):
-        bo = torch.matmul(Ro.transpose(1, 2), X)
-        bi = torch.matmul(Ri.transpose(1, 2), X)
+        bo = torch.bmm(Ro.transpose(1, 2), X)
+        bi = torch.bmm(Ri.transpose(1, 2), X)
         Rwo = Ro * e[:,None]
         Rwi = Ri * e[:,None]
-        mi = torch.matmul(Rwi, bo)
-        mo = torch.matmul(Rwo, bi)
+        mi = torch.bmm(Rwi, bo)
+        mo = torch.bmm(Rwo, bi)
         M = torch.cat([mi, mo, X], dim=2)
         return self.network(M)
 
