@@ -21,14 +21,14 @@ class Estimator():
 
     def __init__(self, model, loss_func, opt='Adam',
                  train_losses=None, valid_losses=None,
-                 cuda=False):
+                 lr=0.001, cuda=False):
 
         self.model = model
         if cuda:
             self.model.cuda()
         self.loss_func = loss_func
         if opt == 'Adam':
-            self.optimizer = torch.optim.Adam(self.model.parameters())
+            self.optimizer = torch.optim.Adam(self.model.parameters(), lr=lr)
 
         self.train_losses = train_losses if train_losses is not None else []
         self.valid_losses = valid_losses if valid_losses is not None else []
