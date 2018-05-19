@@ -25,7 +25,7 @@ from torch.autograd import Variable
 import torch.nn as nn
 
 # Local imports
-from graph import load_graphs, SparseGraph, feature_scale, graph_from_sparse
+from graph import load_graphs, SparseGraph, graph_from_sparse
 from model import SegmentClassifier
 from estimator import Estimator
 
@@ -47,16 +47,16 @@ def parse_args():
     parser = argparse.ArgumentParser('trainTrackFilter.py')
     add_arg = parser.add_argument
     add_arg('--input-dir',
-            default='/global/cscratch1/sd/sfarrell/heptrkx/hit_graphs_mu10_003/data')
-            #default='/global/cscratch1/sd/sfarrell/heptrkx/hit_graphs_mu200_000/data')
+            default='/global/cscratch1/sd/sfarrell/heptrkx/hit_graphs_tml_001/data')
     add_arg('--output-dir')
-    add_arg('--n-samples', type=int, default=1024)
+    add_arg('--n-samples', type=int, default=1)
     add_arg('--valid-frac', type=float, default=0.2)
     add_arg('--test-frac', type=float, default=0.2)
     add_arg('--n-epochs', type=int, default=1)
     add_arg('--batch-size', type=int, default=1)
     add_arg('--hidden-dim', type=int, default=8)
-    add_arg('--n-iters', type=int, default=1)
+    add_arg('--n-iters', type=int, default=1, help='number of graph iterations')
+    add_arg('--lr', type=float, default=0.001, help='learning rate')
     add_arg('--cuda', action='store_true')
     add_arg('--show-config', action='store_true')
     add_arg('--train-verbosity', type=int, default=0)
@@ -126,7 +126,7 @@ def main():
 
     # Load the data
     logging.info('Loading input graphs')
-    filenames = [os.path.join(args.input_dir, 'event%06i.npz' % i)
+    filenames = [os.path.join(args.input_dir, 'graph%06i.npz' % i)
                  for i in range(args.n_samples)]
     graphs = load_graphs(filenames, SparseGraph)
 
@@ -157,7 +157,7 @@ def main():
 
     # Construct the model
     logging.info('Building the model')
-    n_features = feature_scale.shape[0]
+    n_features = train_graphs[0].X.shape[1]
     model = SegmentClassifier(input_dim=n_features,
                               hidden_dim=args.hidden_dim,
                               n_iters=args.n_iters)
