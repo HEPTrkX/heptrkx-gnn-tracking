@@ -162,7 +162,7 @@ def main():
                               hidden_dim=args.hidden_dim,
                               n_iters=args.n_iters)
     loss_func = nn.BCELoss()
-    estim = Estimator(model, loss_func=loss_func, cuda=args.cuda)
+    estim = Estimator(model, loss_func=loss_func, lr=args.lr, cuda=args.cuda)
 
     # Train the model
     estim.fit_gen(train_batcher, n_batches=n_train_batches,
@@ -196,7 +196,7 @@ def main():
         # Serialize the model
         torch.save(estim.model.state_dict(), make_path('model'))
         # Save the losses for plotting
-        np.savez(os.path.join(args.output_dir, 'losses'),
+        np.savez(make_path('losses.npz'),
                  train_losses=estim.train_losses,
                  valid_losses=estim.valid_losses)
 
