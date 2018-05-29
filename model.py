@@ -69,9 +69,11 @@ class SegmentClassifier(nn.Module):
             nn.Linear(input_dim, hidden_dim),
             hidden_activation())
         # Setup the edge network
-        self.edge_network = EdgeNetwork(input_dim+hidden_dim, hidden_dim, hidden_activation)
+        self.edge_network = EdgeNetwork(input_dim+hidden_dim, hidden_dim,
+                                        hidden_activation)
         # Setup the node layers
-        self.node_network = NodeNetwork(input_dim+hidden_dim, hidden_dim, hidden_activation)
+        self.node_network = NodeNetwork(input_dim+hidden_dim, hidden_dim,
+                                        hidden_activation)
 
     def forward(self, inputs):
         """Apply forward pass of the model"""
