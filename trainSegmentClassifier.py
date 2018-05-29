@@ -128,7 +128,6 @@ def main():
     logging.info('Loading input graphs')
     filenames = [os.path.join(args.input_dir, 'graph%06i.npz' % i)
                  for i in range(args.n_samples)]
-    graphs = load_graphs(filenames, SparseGraph)
 
     # We round by batch_size to avoid partial batches
     logging.info('Partitioning the data')
@@ -140,8 +139,13 @@ def main():
     n_test_batches = n_test #// args.batch_size
 
     # Partition the dataset
-    train_graphs, test_graphs = train_test_split(graphs, test_size=n_test)
-    train_graphs, valid_graphs = train_test_split(train_graphs, test_size=n_valid)
+    train_files, test_files = train_test_split(filenames, test_size=n_test)
+    train_files, valid_files = train_test_split(train_files, test_size=n_valid)
+
+    # Load the graphs
+    train_graphs = load_graphs(train_files, SparseGraph)
+    valid_graphs = load_graphs(valid_files, SparseGraph)
+    test_graphs = load_graphs(test_files, SparseGraph)
 
     logging.info('Train set size: %i' % len(train_graphs))
     logging.info('Valid set size: %i' % len(valid_graphs))
@@ -199,6 +203,10 @@ def main():
         np.savez(make_path('losses.npz'),
                  train_losses=estim.train_losses,
                  valid_losses=estim.valid_losses)
+        # Save the filelists for later analysis
+        np.save(make_path('train_filelist.npy'), train_files)
+        np.save(make_path('valid_filelist.npy'), valid_files)
+        np.save(make_path('test_filelist.npy'), test_files)
 
     # Optional interactive session
     if args.interactive:
