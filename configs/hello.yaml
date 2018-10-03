@@ -1,0 +1,11 @@
+data_config:
+    name: dummy
+    n_train: 1024
+    n_valid: 1024
+
+experiment_config:
+    name: hello
+
+train_config:
+    batch_size: 64
+    n_epochs: 1
