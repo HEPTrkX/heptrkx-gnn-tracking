@@ -23,6 +23,9 @@ class HelloTrainer(BaseTrainer):
     def write_checkpoint(self, checkpoint_id):
         pass
 
+    def write_summaries(self):
+        pass
+
     def train_epoch(self, data_loader):
         summary = dict()
         start_time = time.time()
