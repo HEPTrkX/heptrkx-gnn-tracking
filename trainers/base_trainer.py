@@ -17,10 +17,11 @@ class BaseTrainer(object):
     logging of summaries, and checkpoints.
     """
 
-    def __init__(self, output_dir, device='cpu'):
+    def __init__(self, output_dir=None, device='cpu'):
         self.logger = logging.getLogger(self.__class__.__name__)
         self.device = device
-        self.output_dir = os.path.expandvars(output_dir)
+        self.output_dir = (os.path.expandvars(output_dir)
+                           if output_dir is not None else None)
         self.summaries = {}
 
     def print_model_summary(self):
