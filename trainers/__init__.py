@@ -12,5 +12,8 @@ def get_trainer(name, **trainer_args):
     if name == 'hello':
         from .hello import HelloTrainer
         return HelloTrainer(**trainer_args)
+    elif name == 'basic':
+        from .basic import BasicTrainer
+        return BasicTrainer(**trainer_args)
     else:
         raise Exception('Trainer %s unknown' % name)
