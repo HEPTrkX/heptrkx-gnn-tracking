@@ -1,7 +1,9 @@
 # HEP.TrkX Graph Neural Networks for Particle Tracking
 
 This repository contains the Graph Neural Network code which accompanies
-the HEP.TrkX CTD 2018 presentation and paper (link to come).
+the HEP.TrkX CTD 2018 presentation and paper.
+
+Paper: https://arxiv.org/abs/1810.06111
 
 The CTD results are implemented in Jupyter notebooks.
 There is also some more recent work on TrackML challenge data.
