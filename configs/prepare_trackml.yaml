@@ -1,7 +1,7 @@
 # Input/output configuration
 input_dir: /global/cscratch1/sd/sfarrell/trackml/train_100_events
 output_dir: /global/cscratch1/sd/sfarrell/heptrkx/data/hitgraphs_000
-n_files: 1
+n_files: 100
 
 # Graph building configuration
 selection:
