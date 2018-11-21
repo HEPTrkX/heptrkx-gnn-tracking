@@ -1,6 +1,5 @@
 """
-This module contains the hit graph dataset code.
-
+This module contains code for interacting with hit graphs.
 A Graph is a namedtuple of matrices X, Ri, Ro, y.
 """
 
