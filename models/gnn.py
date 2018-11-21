@@ -3,11 +3,8 @@ This module implements the PyTorch modules that define the
 message-passing graph neural networks for hit or segment classification.
 """
 
-from __future__ import print_function
-
 import torch
 import torch.nn as nn
-
 
 class EdgeNetwork(nn.Module):
     """
@@ -56,13 +53,13 @@ class NodeNetwork(nn.Module):
         M = torch.cat([mi, mo, X], dim=2)
         return self.network(M)
 
-class SegmentClassifier(nn.Module):
+class GNNSegmentClassifier(nn.Module):
     """
     Segment classification graph neural network model.
     Consists of an input network, an edge network, and a node network.
     """
     def __init__(self, input_dim=2, hidden_dim=8, n_iters=3, hidden_activation=nn.Tanh):
-        super(SegmentClassifier, self).__init__()
+        super(GNNSegmentClassifier, self).__init__()
         self.n_iters = n_iters
         # Setup the input network
         self.input_network = nn.Sequential(
