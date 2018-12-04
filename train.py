@@ -14,7 +14,7 @@ from torch.utils.data import DataLoader
 from torch.utils.data.distributed import DistributedSampler
 
 # Locals
-from datasets import get_datasets
+from datasets import get_data_loaders
 from trainers import get_trainer
 
 def parse_args():
@@ -58,17 +58,10 @@ def main():
     train_config = config['train_config']
 
     # Load the datasets
-    train_dataset, valid_dataset = get_datasets(**data_config)
-    batch_size = train_config.pop('batch_size')
-    train_sampler = DistributedSampler(train_dataset) if args.distributed else None
-    train_data_loader = DataLoader(train_dataset, batch_size=batch_size,
-                                   sampler=train_sampler)
-    logging.info('Loaded %g training samples', len(train_dataset))
-    if valid_dataset is not None:
-        valid_data_loader = DataLoader(valid_dataset, batch_size=batch_size)
-        logging.info('Loaded %g validation samples', len(valid_dataset))
-    else:
-        valid_data_loader = None
+    train_data_loader, valid_data_loader = get_data_loaders(**data_config)
+    logging.info('Loaded %g training samples', len(train_data_loader.dataset))
+    if valid_data_loader is not None:
+        logging.info('Loaded %g validation samples', len(valid_data_loader.dataset))
 
     # Load the trainer
     experiment_config = config['experiment_config']
