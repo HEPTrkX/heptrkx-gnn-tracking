@@ -164,7 +164,7 @@ def split_detector_sections(hits, phi_edges, eta_edges):
             hits_sections.append(sec_hits.assign(eta_section=j))
     return hits_sections
 
-def process_event(prefix, pt_min, n_eta_sections, n_phi_sections,
+def process_event(prefix, output_dir, pt_min, n_eta_sections, n_phi_sections,
                   eta_range, phi_range, phi_slope_max, z0_max):
     # Load the data
     evtid = int(prefix[-9:])
@@ -199,7 +199,14 @@ def process_event(prefix, pt_min, n_eta_sections, n_phi_sections,
                               feature_scale=feature_scale)
               for section_hits in hits_sections]
 
-    return graphs
+    # Write these graphs to the output directory
+    try:
+        base_prefix = os.path.basename(prefix)
+        filenames = [os.path.join(output_dir, '%s_g%03i' % (base_prefix, i))
+                     for i in range(len(graphs))]
+    except Exception as e:
+        logging.info(e)
+    save_graphs(graphs, filenames)
 
 def main():
     """Main function"""
@@ -231,25 +238,16 @@ def main():
                            for f in all_files if f.endswith(suffix))
     file_prefixes = file_prefixes[:config['n_files']]
 
+    # Prepare output
+    output_dir = os.path.expandvars(config['output_dir'])
+    os.makedirs(output_dir, exist_ok=True)
+    logging.info('Writing outputs to ' + output_dir)
+
     # Process input files with a worker pool
     with mp.Pool(processes=args.n_workers) as pool:
-        process_func = partial(process_event, phi_range=(-np.pi, np.pi),
-                               **config['selection'])
-        graphs = pool.map(process_func, file_prefixes)
-
-    # Merge across workers into one list of event samples
-    graphs = [g for gs in graphs for g in gs]
-
-    # Write outputs
-    output_dir = os.path.expandvars(config['output_dir'])
-    if output_dir:
-        logging.info('Writing outputs to ' + output_dir)
-        os.makedirs(output_dir, exist_ok=True)
-
-        # Write out the graphs
-        filenames = [os.path.join(output_dir, 'graph%06i' % i)
-                     for i in range(len(graphs))]
-        save_graphs(graphs, filenames)
+        process_func = partial(process_event, output_dir=output_dir,
+                               phi_range=(-np.pi, np.pi), **config['selection'])
+        pool.map(process_func, file_prefixes)
 
     # Drop to IPython interactive shell
     if args.interactive:
