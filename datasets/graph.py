@@ -14,9 +14,11 @@ Graph = namedtuple('Graph', ['X', 'Ri', 'Ro', 'y'])
 def graph_to_sparse(graph):
     Ri_rows, Ri_cols = graph.Ri.nonzero()
     Ro_rows, Ro_cols = graph.Ro.nonzero()
-    return dict(X=graph.X, Ri_rows=Ri_rows, Ri_cols=Ri_cols, y=graph.y)
+    return dict(X=graph.X, y=graph.y,
+                Ri_rows=Ri_rows, Ri_cols=Ri_cols,
+                Ro_rows=Ro_rows, Ro_cols=Ro_cols)
 
-def sparse_to_graph(X, Ri_rows, Ri_cols, Ro_rows, Ro_cols, y, dype=np.uint8):
+def sparse_to_graph(X, Ri_rows, Ri_cols, Ro_rows, Ro_cols, y, dtype=np.uint8):
     n_nodes, n_edges = X.shape[0], Ri_rows.shape[0]
     Ri = np.zeros((n_nodes, n_edges), dtype=dtype)
     Ro = np.zeros((n_nodes, n_edges), dtype=dtype)
