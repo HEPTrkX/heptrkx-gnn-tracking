@@ -10,6 +10,9 @@ def get_datasets(name, **data_args):
     if name == 'dummy':
         from .dummy import get_datasets
         return get_datasets(**data_args)
+    elif name == 'hitgraphs':
+        from .hitgraphs import get_datasets
+        return get_datasets(**data_args)
     else:
         raise Exception('Dataset %s unknown' % name)
 
@@ -19,6 +22,10 @@ def get_data_loaders(name, batch_size, distributed=False, **data_args):
     if name == 'dummy':
         from .dummy import get_datasets
         train_dataset, valid_dataset = get_datasets(**data_args)
+    elif name == 'hitgraphs':
+        from . import hitgraphs
+        train_dataset, valid_dataset = hitgraphs.get_datasets(**data_args)
+        collate_fn = hitgraphs.collate_fn
     else:
         raise Exception('Dataset %s unknown' % name)
 
