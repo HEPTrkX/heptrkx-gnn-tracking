@@ -1,18 +1,18 @@
 data_config:
-    input_dir: /global/cscratch1/sd/sfarrell/heptrkx/data/hitgraphs_001
+    input_dir: /global/cscratch1/sd/sfarrell/heptrkx/data/hitgraphs_small_000
     name: hitgraphs
-    n_train: 1024
+    n_train: 8192
     n_valid: 1024
     batch_size: 1
 
 experiment_config:
     name: gnn
-    output_dir: /global/cscratch1/sd/sfarrell/heptrkx/results/gnnsegclf_000
+    output_dir: /global/cscratch1/sd/sfarrell/heptrkx/results/gnnsegclf_001
 
 model_config:
     model_type: 'gnn_segment_classifier'
     input_dim: 3
-    hidden_dim: 16
+    hidden_dim: 64
     n_iters: 4
     loss_func: 'BCELoss'
     optimizer: 'Adam'
