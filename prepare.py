@@ -26,6 +26,8 @@ def parse_args():
     add_arg = parser.add_argument
     add_arg('config', nargs='?', default='configs/prepare_trackml.yaml')
     add_arg('--n-workers', type=int, default=1)
+    add_arg('--task', type=int, default=0)
+    add_arg('--n-tasks', type=int, default=1)
     add_arg('-v', '--verbose', action='store_true')
     add_arg('--show-config', action='store_true')
     add_arg('--interactive', action='store_true')
@@ -206,6 +208,7 @@ def process_event(prefix, output_dir, pt_min, n_eta_sections, n_phi_sections,
                      for i in range(len(graphs))]
     except Exception as e:
         logging.info(e)
+    logging.info('Event %i, writing graphs', evtid)
     save_graphs(graphs, filenames)
 
 def main():
@@ -225,6 +228,8 @@ def main():
     # Load configuration
     with open(args.config) as f:
         config = yaml.load(f)
+    if args.task == 0:
+        logging.info('Configuration: %s' % config)
 
     # Construct layer pairs from adjacent layer numbers
     layers = np.arange(10)
@@ -237,6 +242,9 @@ def main():
     file_prefixes = sorted(os.path.join(input_dir, f.replace(suffix, ''))
                            for f in all_files if f.endswith(suffix))
     file_prefixes = file_prefixes[:config['n_files']]
+
+    # Split the input files by number of tasks and select my chunk only
+    file_prefixes = np.array_split(file_prefixes, args.n_tasks)[args.task]
 
     # Prepare output
     output_dir = os.path.expandvars(config['output_dir'])
