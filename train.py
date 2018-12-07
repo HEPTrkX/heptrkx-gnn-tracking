@@ -58,7 +58,8 @@ def main():
     train_config = config['train_config']
 
     # Load the datasets
-    train_data_loader, valid_data_loader = get_data_loaders(**data_config)
+    train_data_loader, valid_data_loader = get_data_loaders(
+        distributed=args.distributed, **data_config)
     logging.info('Loaded %g training samples', len(train_data_loader.dataset))
     if valid_data_loader is not None:
         logging.info('Loaded %g validation samples', len(valid_data_loader.dataset))
