@@ -4,7 +4,7 @@
 #SBATCH -t 30
 
 . scripts/setup.sh
-config=configs/prep_small.yaml
+config=configs/prep_med.yaml
 
 # Loop over tasks (1 per node) and submit
 i=0
