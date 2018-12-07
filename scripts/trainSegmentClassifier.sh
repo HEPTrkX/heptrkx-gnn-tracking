@@ -4,7 +4,4 @@
 #SBATCH -t 30
 
 . scripts/setup.sh
-module list
-which python
-srun -l python ./train.py configs/segclf.yaml
-#srun -l python ./train.py -d $@
+srun -l python ./train.py -d configs/segclf.yaml
