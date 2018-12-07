@@ -46,7 +46,7 @@ def main():
     # Initialize MPI
     if args.distributed:
         dist.init_process_group(backend='mpi')
-        logging.info('MPI rank %i' % dist.get_rank())
+        logging.info('MPI rank %i out of %i', dist.get_rank(), dist.get_world_size())
 
     # Load configuration
     with open(args.config) as f:
