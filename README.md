@@ -1,33 +1,23 @@
-# NERSC PyTorch examples
+# Graph Neural Networks for particle track reconstruction
 
-This repository contains some PyTorch example models and training code
-with support for distributed training on NERSC systems.
+This repository contains the PyTorch implementation of the GNNs for particle
+track reconstruction from CTD 2018: https://arxiv.org/abs/1810.06111.
 
-The layout of this package can also serve as a template for PyTorch
-projects and the provided BaseTrainer and train.py script can be used to
-reduce boiler plate.
+## Contents
 
-## Package layout
+The main python scripts for running:
+- *[prepare.py](prepare.py)*: the data preparation script which reads
+TrackML data files, cleans and reduces the data, and writes hit graphs to
+the filesystem.
+- *[train.py](train.py)*: the main training script which is steered by
+configuration file and loads the data, model, and trainer, and invokes
+the trainer to train the model.
 
-The directory layout of this repo is designed to be flexible:
-- Configuration files (in YAML format) go in `configs/`
-- Dataset specifications using PyTorch's Dataset API go into `datasets/`
-- Model implementations go into `models/`
-- Trainer implementations go into `trainers/`. Trainers inherit from
-  `BaseTrainer` and are responsible for constructing models as well as training
-  and evaluating them.
-
-All examples are run with the generic training script, `train.py`.
-
-## Examples
-
-This package currently contains the following examples:
-- Minimal Hello World example.
-
-## How to run
-
-To run the examples on the Cori supercomputer, you may use the provided
-example SLURM batch script. Here's how to run the Hello World example on 4
-Haswell nodes:
-
-`sbatch -N 4 scripts/batchScript.sh configs/hello.yaml`
+Other stuff:
+- In the scripts directory are SLURM batch scripts for running the jobs
+on Cori at NERSC.
+- The GNN model code lives in [models/gnn.py](models/gnn.py).
+- The dataset code for reading the prepared hit graphs lives in
+[datasets/hitgraphs.py](datasets/hitgraphs.py).
+- The main trainer code for the GNN segment classifier lives in
+[trainers/gnn.py](trainers/gnn.py).
