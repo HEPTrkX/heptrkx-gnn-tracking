@@ -19,9 +19,9 @@ class GNNTrainer(BaseTrainer):
     def __init__(self, **kwargs):
         super(GNNTrainer, self).__init__(**kwargs)
 
-    def build_model(self, model_type='cnn_classifier',
+    def build_model(self, model_type='gnn_segment_classifier',
                     optimizer='Adam', learning_rate=0.001,
-                    loss_func='CrossEntropyLoss', **model_args):
+                    loss_func='BCELoss', **model_args):
         """Instantiate our model"""
         self.model = get_model(name=model_type, **model_args).to(self.device)
         if self.distributed:
