@@ -21,14 +21,15 @@ class GNNTrainer(BaseTrainer):
 
     def build_model(self, model_type='gnn_segment_classifier',
                     optimizer='Adam', learning_rate=0.001,
-                    loss_func='BCELoss', **model_args):
+                    loss_func='binary_cross_entropy', **model_args):
         """Instantiate our model"""
         self.model = get_model(name=model_type, **model_args).to(self.device)
         if self.distributed:
             self.model = nn.parallel.DistributedDataParallelCPU(self.model)
         self.optimizer = getattr(torch.optim, optimizer)(
             self.model.parameters(), lr=learning_rate)
-        self.loss_func = getattr(torch.nn, loss_func)()
+        # Functional loss functions
+        self.loss_func = getattr(nn.functional, loss_func)
     
     def train_epoch(self, data_loader):
         """Train for one epoch"""

@@ -15,7 +15,7 @@ model_config:
     input_dim: 3
     hidden_dim: 64
     n_iters: 4
-    loss_func: 'BCELoss'
+    loss_func: 'binary_cross_entropy'
     optimizer: 'Adam'
     learning_rate: 0.001
 
