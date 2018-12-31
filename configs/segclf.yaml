@@ -4,6 +4,7 @@ data_config:
     n_train: 8192
     n_valid: 1024
     batch_size: 1
+    n_workers: 4
 
 experiment_config:
     name: gnn
