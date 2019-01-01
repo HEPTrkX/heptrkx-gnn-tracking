@@ -21,8 +21,6 @@ class HitGraphDataset(Dataset):
         filenames = [os.path.join(input_dir, f) for f in os.listdir(input_dir)
                      if f.startswith('event') and f.endswith('.npz')]
         self.filenames = filenames[:n_samples]
-        #self.filenames = [os.path.join(input_dir, 'graph%06i.npz' % i)
-        #                  for i in range(n_samples)]
 
     def __getitem__(self, index):
         return load_graph(self.filenames[index])
@@ -55,10 +53,8 @@ def collate_fn(graphs):
         batch_inputs = [torch.from_numpy(m[None]).float() for m in [g.X, g.Ri, g.Ro]]
         batch_target = torch.from_numpy(g.y[None]).float()
         return batch_inputs, batch_target
-        #return (torch.from_numpy(g.X[None]), torch.from_numpy(g.Ri[None]),
-        #        torch.from_numpy(g.Ro[None]), torch.from_numpy(g.y[None]))
 
-    # Get the maximum sizes in this batch
+    # Get the matrix sizes in this batch
     n_features = graphs[0].X.shape[1]
     n_nodes = np.array([g.X.shape[0] for g in graphs])
     n_edges = np.array([g.y.shape[0] for g in graphs])
@@ -81,5 +77,3 @@ def collate_fn(graphs):
     batch_inputs = [torch.from_numpy(bm) for bm in [batch_X, batch_Ri, batch_Ro]]
     batch_target = torch.from_numpy(batch_y)
     return batch_inputs, batch_target
-    #return (torch.from_numpy(batch_X), torch.from_numpy(batch_Ri),
-    #        torch.from_numpy(batch_Ro), torch.from_numpy(batch_y))
