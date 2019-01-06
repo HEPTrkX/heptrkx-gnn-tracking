@@ -1,0 +1,13 @@
+# Input/output configuration
+input_dir: /global/cscratch1/sd/sfarrell/trackml/train_all
+output_dir: /global/cscratch1/sd/sfarrell/heptrkx/data/hitgraphs_big_000
+n_files: 8192
+
+# Graph building configuration
+selection:
+    pt_min: 0. # GeV
+    phi_slope_max: 0.0006
+    z0_max: 100
+    n_phi_sections: 8
+    n_eta_sections: 2
+    eta_range: [-5, 5]
