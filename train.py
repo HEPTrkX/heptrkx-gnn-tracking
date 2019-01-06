@@ -3,6 +3,7 @@ Main training script for NERSC PyTorch examples
 """
 
 # System
+import os
 import argparse
 import logging
 
@@ -66,7 +67,7 @@ def main():
 
     # Load the trainer
     experiment_config = config['experiment_config']
-    output_dir = experiment_config.pop('output_dir', None)
+    output_dir = os.path.expandvars(experiment_config.pop('output_dir', None))
     if args.distributed and dist.get_rank() != 0:
         output_dir = None
     trainer = get_trainer(distributed=args.distributed, output_dir=output_dir,

@@ -18,6 +18,7 @@ class HitGraphDataset(Dataset):
     """PyTorch dataset specification for hit graphs"""
 
     def __init__(self, input_dir, n_samples):
+        input_dir = os.path.expandvars(input_dir)
         filenames = [os.path.join(input_dir, f) for f in os.listdir(input_dir)
                      if f.startswith('event') and f.endswith('.npz')]
         self.filenames = filenames[:n_samples]

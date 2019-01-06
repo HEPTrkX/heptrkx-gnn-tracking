@@ -1,5 +1,5 @@
 data_config:
-    input_dir: /global/cscratch1/sd/sfarrell/heptrkx/data/hitgraphs_small_000
+    input_dir: ${SCRATCH}/heptrkx/data/hitgraphs_med_002
     name: hitgraphs
     n_train: 8192
     n_valid: 1024
@@ -8,7 +8,7 @@ data_config:
 
 experiment_config:
     name: gnn
-    output_dir: /global/cscratch1/sd/sfarrell/heptrkx/results/gnnsegclf_001
+    output_dir: ${SCRATCH}/heptrkx/results/gnnsegclf_000
 
 model_config:
     model_type: 'gnn_segment_classifier'
