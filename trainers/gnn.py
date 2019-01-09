@@ -16,8 +16,10 @@ from models import get_model
 class GNNTrainer(BaseTrainer):
     """Trainer code for basic classification problems."""
 
-    def __init__(self, **kwargs):
+    def __init__(self, real_weight=1, fake_weight=1, **kwargs):
         super(GNNTrainer, self).__init__(**kwargs)
+        self.real_weight = real_weight
+        self.fake_weight = fake_weight
 
     def build_model(self, model_type='gnn_segment_classifier',
                     optimizer='Adam', learning_rate=0.001,
@@ -42,18 +44,17 @@ class GNNTrainer(BaseTrainer):
             self.logger.debug('  batch %i', i)
             batch_input = [a.to(self.device) for a in batch_input]
             batch_target = batch_target.to(self.device)
-
-            # TEST - compute target weights for loss function
-            batch_weights_real = batch_target * 0.5 / 0.2
-            batch_weights_fake = (1 - batch_target) * 0.5 / 0.8
+            # Compute target weights on-the-fly for loss function
+            batch_weights_real = batch_target * self.real_weight #0.5 / 0.2
+            batch_weights_fake = (1 - batch_target) * self.fake_weight #0.5 / 0.8
             batch_weights = batch_weights_real + batch_weights_fake
-
             self.model.zero_grad()
             batch_output = self.model(batch_input)
             batch_loss = self.loss_func(batch_output, batch_target, weight=batch_weights)
             batch_loss.backward()
             self.optimizer.step()
             sum_loss += batch_loss.item()
+
         summary['train_time'] = time.time() - start_time
         summary['train_loss'] = sum_loss / (i + 1)
         self.logger.debug(' Processed %i batches' % (i + 1))
