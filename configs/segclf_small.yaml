@@ -1,5 +1,5 @@
 data_config:
-    input_dir: ${SCRATCH}/heptrkx/data/hitgraphs_med_002
+    input_dir: ${SCRATCH}/heptrkx/data/hitgraphs_small_000
     name: hitgraphs
     n_train: 8192
     n_valid: 1024
@@ -8,12 +8,12 @@ data_config:
 
 experiment_config:
     name: gnn
-    output_dir: ${SCRATCH}/heptrkx/results/gnnsegclf_000
+    output_dir: ${SCRATCH}/heptrkx/results/gnnsegclf_small_000
 
 model_config:
     model_type: 'gnn_segment_classifier'
     input_dim: 3
-    hidden_dim: 64
+    hidden_dim: 32
     n_iters: 4
     loss_func: 'binary_cross_entropy'
     optimizer: 'Adam'
