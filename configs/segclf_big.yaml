@@ -1,0 +1,25 @@
+data_config:
+    input_dir: ${SCRATCH}/heptrkx/data/hitgraphs_big_000
+    name: hitgraphs
+    n_train: 1024
+    n_valid: 1024
+    batch_size: 1
+    n_workers: 4
+
+experiment_config:
+    name: gnn
+    output_dir: ${SCRATCH}/heptrkx/results/gnnsegclf_big_000
+    real_weight: 5.0   # 0.5 / 0.1
+    fake_weight: 0.555 # 0.5 / 0.9
+
+model_config:
+    model_type: 'gnn_segment_classifier'
+    input_dim: 3
+    hidden_dim: 128
+    n_iters: 6
+    loss_func: 'binary_cross_entropy'
+    optimizer: 'Adam'
+    learning_rate: 0.001
+
+train_config:
+    n_epochs: 1
