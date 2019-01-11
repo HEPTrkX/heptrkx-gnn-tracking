@@ -41,7 +41,6 @@ class GNNTrainer(BaseTrainer):
         start_time = time.time()
         # Loop over training batches
         for i, (batch_input, batch_target) in enumerate(data_loader):
-            self.logger.debug('  batch %i', i)
             batch_input = [a.to(self.device) for a in batch_input]
             batch_target = batch_target.to(self.device)
             # Compute target weights on-the-fly for loss function
@@ -54,6 +53,7 @@ class GNNTrainer(BaseTrainer):
             batch_loss.backward()
             self.optimizer.step()
             sum_loss += batch_loss.item()
+            self.logger.debug('  batch %i, loss %f', i, batch_loss.item())
 
         summary['train_time'] = time.time() - start_time
         summary['train_loss'] = sum_loss / (i + 1)
