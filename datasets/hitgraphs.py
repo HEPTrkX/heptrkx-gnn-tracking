@@ -31,7 +31,6 @@ class HitGraphDataset(Dataset):
 
 def get_datasets(input_dir, n_train, n_valid):
     data = HitGraphDataset(input_dir, n_train + n_valid)
-    logging.info('total %i train %i valid %i', len(data), n_train, n_valid)
     # Split into train and validation
     train_data, valid_data = random_split(data, [n_train, n_valid])
     return train_data, valid_data
