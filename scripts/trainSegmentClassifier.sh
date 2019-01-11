@@ -6,5 +6,6 @@
 #SBATCH -t 30
 #SBATCH -o logs/%x-%j.out
 
+mkdir logs
 . scripts/setup.sh
 srun -l python ./train.py -v -d configs/segclf_big.yaml
