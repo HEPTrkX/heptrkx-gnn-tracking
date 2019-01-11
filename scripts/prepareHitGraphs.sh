@@ -1,8 +1,11 @@
 #!/bin/bash
+#SBATCH -J prep-med
 #SBATCH -C haswell
 #SBATCH -q debug
 #SBATCH -t 30
+#SBATCH -o logs/%x-%j.out
 
+mkdir -p logs
 . scripts/setup.sh
 config=configs/prep_med.yaml
 
