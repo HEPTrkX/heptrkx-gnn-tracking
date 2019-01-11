@@ -6,7 +6,6 @@ A Graph is a namedtuple of matrices X, Ri, Ro, y.
 from collections import namedtuple
 
 import numpy as np
-import pandas as pd
 
 # A Graph is a namedtuple of matrices (X, Ri, Ro, y)
 Graph = namedtuple('Graph', ['X', 'Ri', 'Ro', 'y'])
