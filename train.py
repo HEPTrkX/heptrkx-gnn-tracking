@@ -4,6 +4,7 @@ Main training script for NERSC PyTorch examples
 
 # System
 import os
+import sys
 import argparse
 import logging
 
@@ -30,33 +31,55 @@ def parse_args():
     add_arg('--interactive', action='store_true')
     return parser.parse_args()
 
+def config_logging(verbose, output_dir):
+    log_format = '%(asctime)s %(levelname)s %(message)s'
+    log_level = logging.DEBUG if verbose else logging.INFO
+    stream_handler = logging.StreamHandler(stream=sys.stdout)
+    stream_handler.setLevel(log_level)
+    file_handler = logging.FileHandler(os.path.join(output_dir, 'out.log'), mode='w')
+    file_handler.setLevel(log_level)
+    logging.basicConfig(level=log_level, format=log_format,
+                        handlers=[stream_handler, file_handler])
+
+def init_workers(distributed=False):
+    """Initialize worker process group"""
+    rank, n_ranks = 0, 1
+    if distributed:
+        dist.init_process_group(backend='mpi')
+        rank = dist.get_rank()
+        n_ranks = dist.get_world_size()
+    return rank, n_ranks
+
+def load_config(config_file):
+    with open(config_file) as f:
+        return yaml.load(f)
+
 def main():
     """Main function"""
 
     # Parse the command line
     args = parse_args()
-
-    # Setup logging
-    log_format = '%(asctime)s %(levelname)s %(message)s'
-    log_level = logging.DEBUG if args.verbose else logging.INFO
-    logging.basicConfig(level=log_level, format=log_format)
-    logging.info('Initializing')
-    if args.show_config:
-        logging.info('Command line config: %s' % args)
-
     # Initialize MPI
-    if args.distributed:
-        dist.init_process_group(backend='mpi')
-        logging.info('MPI rank %i out of %i', dist.get_rank(), dist.get_world_size())
+    rank, n_ranks = init_workers(args.distributed)
 
     # Load configuration
-    with open(args.config) as f:
-        config = yaml.load(f)
-    if not args.distributed or (dist.get_rank() == 0):
-        logging.info('Configuration: %s' % config)
-    data_config = config['data_config']
-    model_config = config.get('model_config', {})
-    train_config = config['train_config']
+    config = load_config(args.config)
+    data_config = config['data']
+    model_config = config.get('model', {})
+    train_config = config['training']
+    experiment_config = config['experiment']
+    output_dir = os.path.expandvars(experiment_config.pop('output_dir', None))
+    if rank != 0:
+        output_dir = None
+
+    # Setup logging
+    config_logging(verbose=args.verbose, output_dir=output_dir)
+    logging.info('Initialized rank %i out of %i', rank, n_ranks)
+    if args.show_config and (rank == 0):
+        logging.info('Command line config: %s' % args)
+    if rank == 0:
+        logging.info('Configuration: %s', config)
+        logging.info('Saving job outputs to %s', output_dir)
 
     # Load the datasets
     train_data_loader, valid_data_loader = get_data_loaders(
@@ -66,22 +89,18 @@ def main():
         logging.info('Loaded %g validation samples', len(valid_data_loader.dataset))
 
     # Load the trainer
-    experiment_config = config['experiment_config']
-    output_dir = os.path.expandvars(experiment_config.pop('output_dir', None))
-    if args.distributed and dist.get_rank() != 0:
-        output_dir = None
     trainer = get_trainer(distributed=args.distributed, output_dir=output_dir,
                           device=args.device, **experiment_config)
     # Build the model
     trainer.build_model(**model_config)
-    if not args.distributed or (dist.get_rank() == 0):
+    if rank == 0:
         trainer.print_model_summary()
 
     # Run the training
     summary = trainer.train(train_data_loader=train_data_loader,
                             valid_data_loader=valid_data_loader,
                             **train_config)
-    if not args.distributed or (dist.get_rank() == 0):
+    if rank == 0:
         trainer.write_summaries()
 
     # Print some conclusions
@@ -97,12 +116,13 @@ def main():
                      n_valid_samples, valid_time, n_valid_samples / valid_time)
 
     # Drop to IPython interactive shell
-    if args.interactive:
+    if args.interactive and (rank == 0):
         logging.info('Starting IPython interactive session')
         import IPython
         IPython.embed()
 
-    logging.info('All done!')
+    if rank == 0:
+        logging.info('All done!')
 
 if __name__ == '__main__':
     main()

@@ -1,16 +1,16 @@
-data_config:
-    input_dir: ${SCRATCH}/heptrkx/data/hitgraphs_small_000
-    name: hitgraphs
-    n_train: 8192
-    n_valid: 1024
-    batch_size: 1
-    n_workers: 4
-
-experiment_config:
+experiment:
     name: gnn
     output_dir: ${SCRATCH}/heptrkx/results/gnnsegclf_small_000
 
-model_config:
+data:
+    input_dir: ${SCRATCH}/heptrkx/data/hitgraphs_small_000
+    name: hitgraphs
+    n_train: 1024 #8192
+    n_valid: 1024
+    batch_size: 1
+    n_workers: 8
+
+model:
     model_type: 'gnn_segment_classifier'
     input_dim: 3
     hidden_dim: 32
@@ -19,5 +19,5 @@ model_config:
     optimizer: 'Adam'
     learning_rate: 0.001
 
-train_config:
+training:
     n_epochs: 16

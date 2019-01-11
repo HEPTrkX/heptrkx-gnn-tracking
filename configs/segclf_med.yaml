@@ -1,4 +1,10 @@
-data_config:
+experiment:
+    name: gnn
+    output_dir: ${SCRATCH}/heptrkx/results/gnnsegclf_med_000
+    real_weight: 2.5   # 0.5 / 0.2
+    fake_weight: 0.625 # 0.5 / 0.8
+
+data:
     input_dir: ${SCRATCH}/heptrkx/data/hitgraphs_med_002
     name: hitgraphs
     n_train: 8192
@@ -6,13 +12,7 @@ data_config:
     batch_size: 1
     n_workers: 4
 
-experiment_config:
-    name: gnn
-    output_dir: ${SCRATCH}/heptrkx/results/gnnsegclf_med_000
-    real_weight: 2.5   # 0.5 / 0.2
-    fake_weight: 0.625 # 0.5 / 0.8
-
-model_config:
+model:
     model_type: 'gnn_segment_classifier'
     input_dim: 3
     hidden_dim: 64
@@ -21,5 +21,5 @@ model_config:
     optimizer: 'Adam'
     learning_rate: 0.001
 
-train_config:
+training:
     n_epochs: 16
