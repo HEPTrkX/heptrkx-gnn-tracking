@@ -55,7 +55,7 @@ class BaseTrainer(object):
                    os.path.join(checkpoint_dir, checkpoint_file))
 
     def build_model(self):
-        """Virtual method to construct the model"""
+        """Virtual method to construct the model(s)"""
         raise NotImplementedError
 
     def train_epoch(self, data_loader):

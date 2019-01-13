@@ -16,15 +16,13 @@ class HelloTrainer(BaseTrainer):
 
     def build_model(self):
         pass
-    
-    def print_model_summary(self):
-        self.logger.info('Hello world')
-
     def write_checkpoint(self, checkpoint_id):
         pass
-
     def write_summaries(self):
         pass
+
+    def print_model_summary(self):
+        self.logger.info('Hello world')
 
     def train_epoch(self, data_loader):
         summary = dict()

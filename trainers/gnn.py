@@ -30,6 +30,7 @@ class GNNTrainer(BaseTrainer):
         self.model = get_model(name=name, **model_args).to(self.device)
         if self.distributed:
             self.model = nn.parallel.DistributedDataParallelCPU(self.model)
+        # TODO: LR scaling
         self.optimizer = getattr(torch.optim, optimizer)(
             self.model.parameters(), lr=learning_rate)
         # Functional loss functions
@@ -46,8 +47,8 @@ class GNNTrainer(BaseTrainer):
             batch_input = [a.to(self.device) for a in batch_input]
             batch_target = batch_target.to(self.device)
             # Compute target weights on-the-fly for loss function
-            batch_weights_real = batch_target * self.real_weight #0.5 / 0.2
-            batch_weights_fake = (1 - batch_target) * self.fake_weight #0.5 / 0.8
+            batch_weights_real = batch_target * self.real_weight
+            batch_weights_fake = (1 - batch_target) * self.fake_weight
             batch_weights = batch_weights_real + batch_weights_fake
             self.model.zero_grad()
             batch_output = self.model(batch_input)
