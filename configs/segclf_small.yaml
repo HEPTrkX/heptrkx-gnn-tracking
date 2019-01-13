@@ -9,7 +9,7 @@ data:
     n_train: 1024 #8192
     n_valid: 1024
     batch_size: 1
-    n_workers: 8
+    #n_workers: 4
 
 model:
     name: 'gnn_segment_classifier'
