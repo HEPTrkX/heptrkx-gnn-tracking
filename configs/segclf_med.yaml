@@ -8,10 +8,10 @@ trainer:
 data:
     name: hitgraphs
     input_dir: ${SCRATCH}/heptrkx/data/hitgraphs_med_002
-    n_train: 8192
+    n_train: 1024 #8192
     n_valid: 1024
     batch_size: 1
-    n_workers: 4
+    #n_workers: 4 # seg fault when distributed...
 
 model:
     name: 'gnn_segment_classifier'
@@ -24,4 +24,4 @@ model:
     lr_scaling: 'linear'
 
 training:
-    n_epochs: 16
+    n_epochs: 1

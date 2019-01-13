@@ -8,7 +8,7 @@ trainer:
 data:
     name: hitgraphs
     input_dir: ${SCRATCH}/heptrkx/data/hitgraphs_big_000
-    n_train: 16384
+    n_train: 1024 #16384
     n_valid: 1024
     batch_size: 1
     #n_workers: 4 # seg fault when distributed...
@@ -16,12 +16,12 @@ data:
 model:
     name: 'gnn_segment_classifier'
     input_dim: 3
-    hidden_dim: 128
-    n_iters: 6
+    hidden_dim: 64 #128
+    n_iters: 4 #6
     loss_func: 'binary_cross_entropy'
     optimizer: 'Adam'
     learning_rate: 0.001
     lr_scaling: 'linear'
 
 training:
-    n_epochs: 32
+    n_epochs: 1 #32
