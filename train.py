@@ -71,7 +71,9 @@ def main():
     train_config = config['training']
     experiment_config = config['experiment']
     output_dir = os.path.expandvars(experiment_config.pop('output_dir', None))
-    if rank != 0:
+    if rank == 0:
+        os.makedirs(output_dir, exist_ok=True)
+    else:
         output_dir = None
 
     # Setup logging
