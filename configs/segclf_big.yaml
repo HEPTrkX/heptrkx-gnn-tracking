@@ -7,9 +7,9 @@ experiment:
 data:
     input_dir: ${SCRATCH}/heptrkx/data/hitgraphs_big_000
     name: hitgraphs
-    n_train: 1024
+    n_train: 16384
     n_valid: 1024
-    batch_size: 1
+    batch_size: 2
     n_workers: 4
 
 model:
@@ -22,4 +22,4 @@ model:
     learning_rate: 0.001
 
 training:
-    n_epochs: 1
+    n_epochs: 32
