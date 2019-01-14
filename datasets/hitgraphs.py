@@ -17,11 +17,12 @@ from datasets.graph import load_graph
 class HitGraphDataset(Dataset):
     """PyTorch dataset specification for hit graphs"""
 
-    def __init__(self, input_dir, n_samples):
+    def __init__(self, input_dir, n_samples=None):
         input_dir = os.path.expandvars(input_dir)
         filenames = [os.path.join(input_dir, f) for f in os.listdir(input_dir)
                      if f.startswith('event') and f.endswith('.npz')]
-        self.filenames = filenames[:n_samples]
+        self.filenames = (
+            filenames[:n_samples] if n_samples is not None else filenames)
 
     def __getitem__(self, index):
         return load_graph(self.filenames[index])
