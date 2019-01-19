@@ -21,6 +21,7 @@ model:
     loss_func: 'binary_cross_entropy'
     optimizer: 'Adam'
     learning_rate: 0.001
+    lr_scaling: 'linear'
 
 training:
     n_epochs: 16
