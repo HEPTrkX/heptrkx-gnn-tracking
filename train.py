@@ -66,11 +66,7 @@ def main():
 
     # Load configuration
     config = load_config(args.config)
-    data_config = config['data']
-    model_config = config.get('model', {})
-    train_config = config['training']
-    experiment_config = config['experiment']
-    output_dir = os.path.expandvars(experiment_config.pop('output_dir', None))
+    output_dir = os.path.expandvars(config.get('output_dir', None))
     if rank == 0:
         os.makedirs(output_dir, exist_ok=True)
     else:
@@ -87,23 +83,23 @@ def main():
 
     # Load the datasets
     train_data_loader, valid_data_loader = get_data_loaders(
-        distributed=args.distributed, **data_config)
+        distributed=args.distributed, **config['data'])
     logging.info('Loaded %g training samples', len(train_data_loader.dataset))
     if valid_data_loader is not None:
         logging.info('Loaded %g validation samples', len(valid_data_loader.dataset))
 
     # Load the trainer
     trainer = get_trainer(distributed=args.distributed, output_dir=output_dir,
-                          device=args.device, **experiment_config)
-    # Build the model
-    trainer.build_model(**model_config)
+                          device=args.device, **config['trainer'])
+    # Build the model and optimizer
+    trainer.build_model(**config.get('model', {}))
     if rank == 0:
         trainer.print_model_summary()
 
     # Run the training
     summary = trainer.train(train_data_loader=train_data_loader,
                             valid_data_loader=valid_data_loader,
-                            **train_config)
+                            **config['training'])
     if rank == 0:
         trainer.write_summaries()
 

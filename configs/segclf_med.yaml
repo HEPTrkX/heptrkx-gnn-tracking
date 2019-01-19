@@ -1,19 +1,20 @@
-experiment:
+output_dir: ${SCRATCH}/heptrkx/results/gnnsegclf_med_000
+
+trainer:
     name: gnn
-    output_dir: ${SCRATCH}/heptrkx/results/gnnsegclf_med_000
     real_weight: 2.5   # 0.5 / 0.2
     fake_weight: 0.625 # 0.5 / 0.8
 
 data:
-    input_dir: ${SCRATCH}/heptrkx/data/hitgraphs_med_002
     name: hitgraphs
+    input_dir: ${SCRATCH}/heptrkx/data/hitgraphs_med_002
     n_train: 8192
     n_valid: 1024
     batch_size: 1
     n_workers: 4
 
 model:
-    model_type: 'gnn_segment_classifier'
+    name: 'gnn_segment_classifier'
     input_dim: 3
     hidden_dim: 64
     n_iters: 4

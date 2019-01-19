@@ -21,11 +21,13 @@ class GNNTrainer(BaseTrainer):
         self.real_weight = real_weight
         self.fake_weight = fake_weight
 
-    def build_model(self, model_type='gnn_segment_classifier',
+    def build_model(self, name='gnn_segment_classifier',
                     optimizer='Adam', learning_rate=0.001,
                     loss_func='binary_cross_entropy', **model_args):
         """Instantiate our model"""
-        self.model = get_model(name=model_type, **model_args).to(self.device)
+
+        # Construct the model
+        self.model = get_model(name=name, **model_args).to(self.device)
         if self.distributed:
             self.model = nn.parallel.DistributedDataParallelCPU(self.model)
         self.optimizer = getattr(torch.optim, optimizer)(
