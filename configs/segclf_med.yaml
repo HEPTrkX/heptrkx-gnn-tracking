@@ -22,6 +22,7 @@ model:
     optimizer: 'Adam'
     learning_rate: 0.001
     lr_scaling: 'linear'
+    lr_warmup_epochs: 4
 
 training:
-    n_epochs: 1
+    n_epochs: 16

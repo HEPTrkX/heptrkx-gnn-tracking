@@ -85,8 +85,9 @@ class GNNTrainer(BaseTrainer):
         summary['lr'] = self.optimizer.param_groups[0]['lr']
         summary['train_time'] = time.time() - start_time
         summary['train_loss'] = sum_loss / (i + 1)
-        self.logger.debug(' Processed %i batches' % (i + 1))
-        self.logger.info('  Training loss: %.3f' % summary['train_loss'])
+        self.logger.debug(' Processed %i batches', (i + 1))
+        self.logger.info('  Training loss: %.3f', summary['train_loss'])
+        self.logger.info('  Learning rate: %.4f', summary['lr'])
         return summary
 
     @torch.no_grad()
