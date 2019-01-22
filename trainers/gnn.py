@@ -23,7 +23,8 @@ class GNNTrainer(BaseTrainer):
 
     def build_model(self, name='gnn_segment_classifier',
                     optimizer='Adam', learning_rate=0.001,
-                    loss_func='binary_cross_entropy', **model_args):
+                    lr_warmup_epochs=0, loss_func='binary_cross_entropy',
+                    **model_args):
         """Instantiate our model"""
 
         # Construct the model
@@ -33,6 +34,18 @@ class GNNTrainer(BaseTrainer):
         # TODO: LR scaling
         self.optimizer = getattr(torch.optim, optimizer)(
             self.model.parameters(), lr=learning_rate)
+
+        # LR ramp warmup schedule
+        def lr_warmup(epoch, warmup_factor=1, warmup_epochs=lr_warmup_epochs):
+            if epoch < warmup_epochs:
+                return (1 - warmup_factor) * epoch / warmup_epochs + warmup_factor
+            else:
+                return 1
+
+        # LR schedule
+        self.lr_scheduler = torch.optim.lr_scheduler.LambdaLR(
+            self.optimizer, lr_warmup)
+
         # Functional loss functions
         self.loss_func = getattr(nn.functional, loss_func)
     
@@ -42,6 +55,7 @@ class GNNTrainer(BaseTrainer):
         summary = dict()
         sum_loss = 0
         start_time = time.time()
+        self.lr_scheduler.step()
         # Loop over training batches
         for i, (batch_input, batch_target) in enumerate(data_loader):
             batch_input = [a.to(self.device) for a in batch_input]
@@ -58,6 +72,7 @@ class GNNTrainer(BaseTrainer):
             sum_loss += batch_loss.item()
             self.logger.debug('  batch %i, loss %f', i, batch_loss.item())
 
+        summary['lr'] = self.optimizer.param_groups[0]['lr']
         summary['train_time'] = time.time() - start_time
         summary['train_loss'] = sum_loss / (i + 1)
         self.logger.debug(' Processed %i batches' % (i + 1))
