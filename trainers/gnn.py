@@ -38,14 +38,15 @@ class GNNTrainer(BaseTrainer):
         self.loss_func = getattr(nn.functional, loss_func)
 
         # Construct the optimizer
-        # TODO: Add linear ramp warmup
         if lr_scaling == 'linear':
             learning_rate = learning_rate * n_ranks
+            warmup_factor = 1. / n_ranks
         self.optimizer = getattr(torch.optim, optimizer)(
             self.model.parameters(), lr=learning_rate)
 
         # LR ramp warmup schedule
-        def lr_warmup(epoch, warmup_factor=1, warmup_epochs=lr_warmup_epochs):
+        def lr_warmup(epoch, warmup_factor=warmup_factor,
+                      warmup_epochs=lr_warmup_epochs):
             if epoch < warmup_epochs:
                 return (1 - warmup_factor) * epoch / warmup_epochs + warmup_factor
             else:
