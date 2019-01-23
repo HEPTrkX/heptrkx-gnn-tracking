@@ -8,6 +8,7 @@ import time
 # Externals
 import torch
 from torch import nn
+from torch.optim.lr_scheduler import LambdaLR
 
 # Locals
 from .base_trainer import BaseTrainer
@@ -53,12 +54,8 @@ class GNNTrainer(BaseTrainer):
                 return 1
 
         # LR schedule
-        self.lr_scheduler = torch.optim.lr_scheduler.LambdaLR(
-            self.optimizer, lr_warmup)
+        self.lr_scheduler = LambdaLR(self.optimizer, lr_warmup)
 
-        # Functional loss functions
-        self.loss_func = getattr(nn.functional, loss_func)
-    
     def train_epoch(self, data_loader):
         """Train for one epoch"""
         self.model.train()
