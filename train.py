@@ -92,7 +92,7 @@ def main():
     trainer = get_trainer(distributed=args.distributed, output_dir=output_dir,
                           device=args.device, **config['trainer'])
     # Build the model and optimizer
-    trainer.build_model(**config.get('model', {}))
+    trainer.build_model(n_ranks=n_ranks, **config.get('model', {}))
     if rank == 0:
         trainer.print_model_summary()
 

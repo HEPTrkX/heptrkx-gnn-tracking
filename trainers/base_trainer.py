@@ -54,7 +54,7 @@ class BaseTrainer(object):
         torch.save(dict(model=self.model.state_dict()),
                    os.path.join(checkpoint_dir, checkpoint_file))
 
-    def build_model(self):
+    def build_model(self, n_ranks):
         """Virtual method to construct the model(s)"""
         raise NotImplementedError
 

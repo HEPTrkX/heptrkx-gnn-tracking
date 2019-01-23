@@ -14,7 +14,7 @@ class HelloTrainer(BaseTrainer):
     def __init__(self, **kwargs):
         super(HelloTrainer, self).__init__(**kwargs)
 
-    def build_model(self):
+    def build_model(self, n_ranks):
         pass
     def write_checkpoint(self, checkpoint_id):
         pass
