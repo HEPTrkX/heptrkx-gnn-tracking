@@ -32,6 +32,8 @@ class HitGraphDataset(Dataset):
 
 def get_datasets(input_dir, n_train, n_valid):
     data = HitGraphDataset(input_dir, n_train + n_valid)
+    # deterministic splitting ensures all workers split the same way
+    torch.manual_seed(1)
     # Split into train and validation
     train_data, valid_data = random_split(data, [n_train, n_valid])
     return train_data, valid_data
