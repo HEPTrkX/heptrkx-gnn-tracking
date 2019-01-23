@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH -J segclf-big
+#SBATCH -J segclf-med
 #SBATCH -C haswell
 #SBATCH -q debug
 #SBATCH -t 30
@@ -8,4 +8,4 @@
 mkdir -p logs
 . scripts/setup.sh
 
-srun -l python ./train.py -v -d configs/segclf_big.yaml
+srun -l python ./train.py -d configs/segclf_med.yaml

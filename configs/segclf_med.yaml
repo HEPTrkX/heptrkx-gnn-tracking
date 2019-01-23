@@ -8,8 +8,8 @@ trainer:
 data:
     name: hitgraphs
     input_dir: ${SCRATCH}/heptrkx/data/hitgraphs_med_002
-    n_train: 1024 #8192
-    n_valid: 1024
+    n_train: 8192
+    n_valid: 128
     batch_size: 1
     #n_workers: 4 # seg fault when distributed...
 
@@ -22,7 +22,7 @@ model:
     optimizer: 'Adam'
     learning_rate: 0.001
     lr_scaling: 'linear'
-    lr_warmup_epochs: 4
+    lr_warmup_epochs: 2
 
 training:
-    n_epochs: 16
+    n_epochs: 4
