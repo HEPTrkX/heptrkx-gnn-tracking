@@ -101,6 +101,7 @@ def main():
     summary = trainer.train(train_data_loader=train_data_loader,
                             valid_data_loader=valid_data_loader,
                             **config['training'])
+    # TODO: need mechanism to reduce summaries
     if rank == 0:
         trainer.write_summaries()
 
