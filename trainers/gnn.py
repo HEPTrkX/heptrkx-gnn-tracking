@@ -84,7 +84,7 @@ class GNNTrainer(BaseTrainer):
         summary['train_loss'] = sum_loss / (i + 1)
         self.logger.debug(' Processed %i batches', (i + 1))
         self.logger.info('  Training loss: %.3f', summary['train_loss'])
-        self.logger.info('  Learning rate: %.5f', summary['lr'])
+        #self.logger.info('  Learning rate: %.5f', summary['lr'])
         return summary
 
     @torch.no_grad()
@@ -98,15 +98,19 @@ class GNNTrainer(BaseTrainer):
         start_time = time.time()
         # Loop over batches
         for i, (batch_input, batch_target) in enumerate(data_loader):
-            self.logger.debug(' batch %i', i)
+            #self.logger.debug(' batch %i', i)
             batch_input = [a.to(self.device) for a in batch_input]
             batch_target = batch_target.to(self.device)
             batch_output = self.model(batch_input)
-            sum_loss += self.loss_func(batch_output, batch_target).item()
+            batch_loss = self.loss_func(batch_output, batch_target)
+            sum_loss += batch_loss.item()
             # Count number of correct predictions
             matches = ((batch_output > 0.5) == (batch_target > 0.5))
             sum_correct += matches.sum().item()
             sum_total += matches.numel()
+            self.logger.debug(' batch %i loss %.3f correct %i total %i',
+                              i, batch_loss.item(), matches.sum().item(),
+                              matches.numel())
         summary['valid_time'] = time.time() - start_time
         summary['valid_loss'] = sum_loss / (i + 1)
         summary['valid_acc'] = sum_correct / sum_total
