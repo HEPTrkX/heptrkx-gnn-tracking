@@ -1,4 +1,4 @@
-output_dir: ${SCRATCH}/heptrkx/results/gnnsegclf_small_000
+output_dir: ${SCRATCH}/heptrkx/results/gnnsegclf_small_001
 
 trainer:
     name: gnn
@@ -6,10 +6,10 @@ trainer:
 data:
     name: hitgraphs
     input_dir: ${SCRATCH}/heptrkx/data/hitgraphs_small_000
-    n_train: 1024 #8192
-    n_valid: 1024
+    n_train: 16384
+    n_valid: 2048
     batch_size: 1
-    n_workers: 8
+    n_workers: 6
 
 model:
     name: 'gnn_segment_classifier'
