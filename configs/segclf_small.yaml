@@ -1,4 +1,4 @@
-output_dir: ${SCRATCH}/heptrkx/results/gnnsegclf_small_001
+output_dir: ${SCRATCH}/heptrkx/results/gnnsegclf_small_002
 
 trainer:
     name: gnn
@@ -14,11 +14,11 @@ data:
 model:
     name: 'gnn_segment_classifier'
     input_dim: 3
-    hidden_dim: 32
+    hidden_dim: 64
     n_iters: 4
     loss_func: 'binary_cross_entropy'
     optimizer: 'Adam'
     learning_rate: 0.001
 
 training:
-    n_epochs: 16
+    n_epochs: 32
